@@ -43,6 +43,10 @@ uploaded_file = st.file_uploader(
 
 # Use API key from Streamlit secrets
 api_key = st.secrets.get("OPENAI_API_KEY", "")
+if not api_key:
+    st.error("API key not found!")
+else:
+    st.write("API key loaded successfully")
 
 if uploaded_file:
     _reset_answers_if_new_file()
@@ -95,3 +99,4 @@ else:
         st.info("Please enter a question to ask.")
     elif not api_key:
         st.info("API key not set in Streamlit secrets.")
+
