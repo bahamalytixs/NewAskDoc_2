@@ -41,14 +41,24 @@ uploaded_file = st.file_uploader(
     "Upload a plain‑text article", type=["txt"], accept_multiple_files=False
 )
 
-# Use API key from Streamlit secrets
-api_key = st.secrets.get("OPENAI_API_KEY", "")
-if not api_key:
-    st.error("API key not found!")
-else:
-    st.write("API key loaded successfully")
-
 if uploaded_file:
+    with st.form(key="qa_form"):
+        query_text = st.text_input(
+            "Enter your question:",
+            placeholder="e.g. Summarise the main points."
+        )
+        submit_button = st.form_submit_button("Run QA")
+
+    if submit_button:
+        # Only check API key when user clicks submit
+        api_key = st.secrets.get("OPENAI_API_KEY", "")
+        if not api_key:
+            st.error("API key not set in Streamlit secrets.")
+        else:
+            st.write("API key loaded successfully")
+            # Proceed with QA chain
+
+    #if uploaded_file:
     _reset_answers_if_new_file()
 
 query_text = st.text_input(
@@ -99,4 +109,5 @@ else:
         st.info("Please enter a question to ask.")
     elif not api_key:
         st.info("API key not set in Streamlit secrets.")
+
 
