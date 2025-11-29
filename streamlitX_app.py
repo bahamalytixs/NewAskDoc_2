@@ -1,5 +1,6 @@
 import streamlit as st
-from langchain.llms import OpenAI
+#from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
@@ -48,13 +49,13 @@ if uploaded_file:
                         db = Chroma.from_documents(docs, embeddings)
                         retriever = db.as_retriever()
 
-                        # Create QA chain
+                        # Create QA chain                        
                         qa = RetrievalQA.from_chain_type(
-                            llm=OpenAI(openai_api_key=api_key),
+                            llm=ChatOpenAI(openai_api_key=api_key, model_name="gpt-3.5-turbo"),
                             retriever=retriever,
-                            chain_type='stuff'
-                        )
-
+                            chain_type="stuff"
+                         )
+ 
                         # Get answer
                         answer = qa.run(query_text)
                         st.session_state['answers'].append(answer)
