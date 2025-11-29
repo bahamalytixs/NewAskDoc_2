@@ -30,6 +30,8 @@ streamlit>=1.26.0
 # LangChain core library (modern, 1.x)
 langchain>=1.1.0
 
+langchain-openai>=0.1.0
+
 # Chroma vectorstore for embeddings
 chromadb>=0.3.23
 
@@ -41,6 +43,7 @@ nltk>=3.8.0
 
 # Optional: standard utils
 python-dotenv>=1.0.0
+
 
 
 
