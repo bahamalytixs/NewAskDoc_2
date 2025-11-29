@@ -5,48 +5,65 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 
-import os
-os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-#os.environ['OPENAI_API_KEY'] = ''
-#os.environ['HUGGINGFACEHUB_API_TOKEN'] = ''
-
-def generate_response(uploaded_file, openai_api_key, query_text):
-    # Load document if file is uploaded
-    if uploaded_file is not None:
-        documents = [uploaded_file.read().decode()]
-        # Split documents into chunks
-        text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
-        texts = text_splitter.create_documents(documents)
-        # Select embeddings
-        embeddings = OpenAIEmbeddings(openai_api_key=openai_api_key)
-        # Create a vectorstore from documents
-        db = Chroma.from_documents(texts, embeddings)
-        # Create retriever interface
-        retriever = db.as_retriever()
-        # Create QA chain
-        qa = RetrievalQA.from_chain_type(llm=OpenAI(openai_api_key=openai_api_key), chain_type='stuff', retriever=retriever)
-        return qa.run(query_text)
-
-
-# Page title
-st.set_page_config(page_title='🦜🔗 Ask the Doc App')
+# ---------------- Streamlit page config ----------------
+st.set_page_config(page_title='🦜🔗 Ask the Doc App', layout='centered')
 st.title('🦜🔗 Ask the Doc App')
 
-# File upload
+# ---------------- Session state for answers ----------------
+if 'answers' not in st.session_state:
+    st.session_state['answers'] = []
+
+# ---------------- File uploader ----------------
 uploaded_file = st.file_uploader('Upload an article', type='txt')
-# Query text
-query_text = st.text_input('Enter your question:', placeholder = 'Please provide a short summary.', disabled=not uploaded_file)
 
-# Form input and query
-result = []
-with st.form('myform', clear_on_submit=True):
-    openai_api_key = st.text_input('OpenAI API Key', type='password', disabled=not (uploaded_file and query_text))
-    submitted = st.form_submit_button('Submit', disabled=not(uploaded_file and query_text))
-    if submitted and openai_api_key.startswith('sk-'):
-        with st.spinner('Calculating...'):
-            response = generate_response(uploaded_file, openai_api_key, query_text)
-            result.append(response)
-            del openai_api_key
+# ---------------- Only show form if file uploaded ----------------
+if uploaded_file:
+    with st.form('qa_form'):
+        # Query text input
+        query_text = st.text_input(
+            'Enter your question:',
+            placeholder='Please provide a short summary.'
+        )
 
-if len(result):
-    st.info(response)
+        # API key is loaded from Streamlit secrets
+        api_key = st.secrets.get('OPENAI_API_KEY', '')
+
+        submitted = st.form_submit_button('Submit')
+
+        if submitted:
+            if not api_key:
+                st.error("API key not found in Streamlit secrets!")
+            elif not query_text:
+                st.warning("Please enter a question.")
+            else:
+                with st.spinner('Calculating...'):
+                    try:
+                        # Read file and split into chunks
+                        raw_text = uploaded_file.read().decode()
+                        splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+                        docs = splitter.create_documents([raw_text])
+
+                        # Create embeddings and vectorstore
+                        embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+                        db = Chroma.from_documents(docs, embeddings)
+                        retriever = db.as_retriever()
+
+                        # Create QA chain
+                        qa = RetrievalQA.from_chain_type(
+                            llm=OpenAI(openai_api_key=api_key),
+                            retriever=retriever,
+                            chain_type='stuff'
+                        )
+
+                        # Get answer
+                        answer = qa.run(query_text)
+                        st.session_state['answers'].append(answer)
+                        st.success("Answer generated successfully!")
+                        st.info(answer)
+
+                    except Exception as e:
+                        st.error(f"Error running QA chain: {e}")
+
+# ---------------- Show info if no file uploaded ----------------
+else:
+    st.info("Please upload a .txt file to start.")
