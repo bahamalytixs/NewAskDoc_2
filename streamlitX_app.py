@@ -1,13 +1,13 @@
 import sys
 import importlib.util
 
-if importlib.util.find_spec("chromadb") is None:
-    st.error("chromadb is not installed!")
-else:
-    st.success("chromadb is installed correctly")
+#if importlib.util.find_spec("chromadb") is None:
+#    st.error("chromadb is not installed!")
+#else:
+#    st.success("chromadb is installed correctly")
 
-print("Python:", sys.version)
-print("chromadb installed:", importlib.util.find_spec("chromadb") is not None)
+#print("Python:", sys.version)
+#print("chromadb installed:", importlib.util.find_spec("chromadb") is not None)
 
 import streamlit as st
 #from langchain.llms import OpenAI
