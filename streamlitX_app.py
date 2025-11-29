@@ -1,6 +1,11 @@
 import sys
 import importlib.util
 
+if importlib.util.find_spec("chromadb") is None:
+    st.error("chromadb is not installed!")
+else:
+    st.success("chromadb is installed correctly")
+
 print("Python:", sys.version)
 print("chromadb installed:", importlib.util.find_spec("chromadb") is not None)
 
