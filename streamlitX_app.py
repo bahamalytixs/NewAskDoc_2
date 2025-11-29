@@ -1,3 +1,9 @@
+import sys
+import importlib.util
+
+print("Python:", sys.version)
+print("chromadb installed:", importlib.util.find_spec("chromadb") is not None)
+
 import streamlit as st
 #from langchain.llms import OpenAI
 #from langchain.chat_models import ChatOpenAI
