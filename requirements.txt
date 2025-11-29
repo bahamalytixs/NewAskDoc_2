@@ -15,12 +15,32 @@
 # pick a version compatible with the above LangChain
 # langchain-community>=0.0.38,<0.1.0
 
+#================================================================================
+#streamlit
+#langchain   #==0.1.0
+#lang-community
+#openai
+#chromadb
+#tiktoken
+#==================================================================================
 
-streamlit
-langchain   #==0.1.0
-lang-community
-openai
-chromadb
-tiktoken
+# Streamlit and page dependencies
+streamlit>=1.26.0
+
+# LangChain core library (modern, 1.x)
+langchain>=1.1.0
+
+# Chroma vectorstore for embeddings
+chromadb>=0.3.23
+
+# OpenAI SDK for API access
+openai>=0.27.0
+
+# Optional: for text splitting and NLP utilities
+nltk>=3.8.0
+
+# Optional: standard utils
+python-dotenv>=1.0.0
+
 
 
