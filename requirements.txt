@@ -1,25 +1,26 @@
 # Core
-streamlit>=1.29.0
+#streamlit>=1.29.0
 
 # Data handling
-pandas>=2.1.0
-numpy>=1.26.0
+#pandas>=2.1.0
+#numpy>=1.26.0
 
 # OpenAI API
-openai>=1.0.0
+#openai>=1.0.0
 
 # LangChain - choose a compatible version
-langchain>=0.1.15,<0.2.0
+#langchain>=0.1.15,<0.2.0
 
 # Optional: If you need specific LangChain community modules,
 # pick a version compatible with the above LangChain
 # langchain-community>=0.0.38,<0.1.0
 
 
-#streamlit
-#langchain   #==0.1.0
-#lang-community
-#openai
-#chromadb
-#tiktoken
+streamlit
+langchain   #==0.1.0
+lang-community
+openai
+chromadb
+tiktoken
+
 
